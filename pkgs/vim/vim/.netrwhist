@@ -1,8 +1,9 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_cnt =7
 let g:netrw_dirhist_1='/home/foxk5/.vim'
 let g:netrw_dirhist_2='/home/foxk5/resnet_core/modules/abuse'
 let g:netrw_dirhist_3='/home/foxk5/resnet_core/modules/answerline/.git'
 let g:netrw_dirhist_4='/home/foxk5/resnet_core/modules/answerline'
 let g:netrw_dirhist_5='/home/foxk5/resnet_core/modules/answerline/answerline'
 let g:netrw_dirhist_6='/home/foxk5/ProxyMiddleware'
+let g:netrw_dirhist_7='/home/foxk5/.dotfiles/pkgs'
