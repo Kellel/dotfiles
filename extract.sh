@@ -28,7 +28,7 @@ do_install() {
         done
     done
 
-    cp $INTERNAL_VERSION_FILE $VERSION_FILE
+    echo `get_pkg_version` > $VERSION_FILE
 }
 
 if [ -f "$VERSION_FILE" ] && [ `get_pkg_version` == `get_installed_version` ]; then
