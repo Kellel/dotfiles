@@ -12,9 +12,7 @@ get_installed_version() {
 }
 
 get_pkg_version() {
-    local line
-    read line < $INTERNAL_VERSION_FILE
-    echo $line
+    git rev-parse --verify HEAD
 }
 
 do_install() {
