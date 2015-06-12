@@ -23,7 +23,7 @@ do_install() {
                 echo "$PKG_PATH/$pkg/$file is an install-hook execing"
                 $BASH $PKG_PATH/$pkg/$file
             else
-                ln -Tis $PKG_PATH/$pkg/$file ~/.$file
+                ln -Ts $PKG_PATH/$pkg/$file ~/.$file
             fi
         done
     done
@@ -31,8 +31,7 @@ do_install() {
     echo `get_pkg_version` > $VERSION_FILE
 }
 
-if [ -f "$VERSION_FILE" ] && [ `get_pkg_version` == `get_installed_version` ]; then
-    echo "Dotfiles are already at the newest version!"
+if [ -f "$VERSION_FILE" ] && [ `get_pkg_version` = `get_installed_version` ]; then
     exit 1
 else
     echo "Installing Dotfiles"
