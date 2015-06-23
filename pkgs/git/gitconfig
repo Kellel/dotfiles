@@ -2,6 +2,6 @@
 	email = kellen@cablespeed.com
 	name = Kellen Fox
 [push]
-	default = simple
+	default = matching
 [branch]
-    autosetuprebase = always
+	autosetuprebase = always

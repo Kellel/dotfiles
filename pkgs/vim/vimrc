@@ -4,6 +4,8 @@
 " Sets how many lines of history VIM has to remember
 set history=700
 
+syntax on
+
 " Enable filetype plugins
 filetype plugin on
 filetype indent on
@@ -82,7 +84,7 @@ set cursorline
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
-syntax enable
+syntax on
 
 colorscheme elflord
 "set background=dark
@@ -158,10 +160,12 @@ NeoBundle 'Raimondi/delimitMate'
 call neobundle#end()
 
 " Required:
-" filetype plugin indent on
 
 " If there are uninstalled bundles found on startup,
 " this will conveniently prompt you to install them.
 NeoBundleCheck
 
 runtime! conf/*.vim
+
+filetype plugin indent on
+syntax on
