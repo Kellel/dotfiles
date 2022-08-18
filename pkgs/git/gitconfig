@@ -1,7 +1,0 @@
-[user]
-	email = kellen@cablespeed.com
-	name = Kellen Fox
-[push]
-	default = matching
-[branch]
-	autosetuprebase = always
