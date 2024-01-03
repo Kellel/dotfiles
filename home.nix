@@ -20,7 +20,7 @@
   home.packages = [
     pkgs.htop
     pkgs.gnumake
-    pkgs.vim
+    pkgs.tmux
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -54,15 +54,20 @@
 
   programs.vim = {
     enable = true;
+    defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
-      'VundleVim/Vundle.vim'
-      'tpope/vim-fugitive'
-      'lifepillar/vim-solarized8'
-      'ervandew/supertab'
-      'fatih/vim-go'
-      'egonschiele/salt-vim'
-      'LnL7/vim-nix'
+      vim-fugitive
+      vim-solarized8
+      supertab
+      vim-go
+      salt-vim
+      vim-nix
     ]; 
+    settings = {
+      expandtab = true;
+      tabstop = 4;
+      shiftwidth = 4;
+    };
     extraConfig = ''
       set nocompatible
       
@@ -75,15 +80,6 @@
       set number
       set cursorline
       set cursorcolumn
-      
-      " Set shift width to 4 spaces.
-      set shiftwidth=4
-      
-      " Set tab width to 4 columns.
-      set tabstop=4
-      
-      " Use space characters instead of tabs.
-      set expandtab
       
       " Do not save backup files.
       set nobackup
@@ -131,9 +127,9 @@
       
       filetype plugin indent on    " required
       
-      "set termguicolors
-      "colorscheme solarized8_flat
-      "let g:solarized_termtrans = 1
+      set termguicolors
+      colorscheme solarized8_flat
+      let g:solarized_termtrans = 1
       
       "enable Omni
       set omnifunc=syntaxcomplete#Complete
