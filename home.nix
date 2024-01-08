@@ -20,6 +20,8 @@
   home.packages = [
     pkgs.htop
     pkgs.gnumake
+    pkgs.tree
+    pkgs.docker-compose
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
