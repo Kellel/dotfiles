@@ -22,6 +22,9 @@
     pkgs.gnumake
     pkgs.tree
     pkgs.docker-compose
+    pkgs.unzip
+    pkgs.jq
+    pkgs.sipcalc
     pkgs._1password
     pkgs._1password-gui
   ];
@@ -57,6 +60,7 @@
     extraConfig = {
       pull = { rebase = true; };
       init = { defaultBranch = "main"; };
+      core = { editor = "vim"; };
     };
   };
 
