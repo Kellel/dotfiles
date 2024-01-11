@@ -22,6 +22,8 @@
     pkgs.gnumake
     pkgs.tree
     pkgs.docker-compose
+    pkgs._1password
+    pkgs._1password-gui
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
