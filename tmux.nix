@@ -21,7 +21,6 @@
       set-option -g status-interval 3
       set-option -g automatic-rename on
       setw -g aggressive-resize on
-      set-option -g history-limit 7000
       setw -g mode-keys vi
       unbind [
       bind Escape copy-mode

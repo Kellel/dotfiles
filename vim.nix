@@ -9,6 +9,7 @@
       supertab
       vim-go
       salt-vim
+      rust-vim
       vim-nix
     ];
     settings = {
@@ -89,7 +90,15 @@
       let g:go_auto_type_info = 1
       let g:go_doc_popup_window = 1
       let g:go_fmt_command = "goimports"
+      let g:go_fmt_autosave = 1
+      let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
       let g:go_metalinter_autosave = 1
+      let g:go_highlight_types = 1
+      let g:go_highlight_functions = 1
+      let g:go_highlight_fields = 1
+
+      " rust-vim settings
+      let g:rustfmt_autosave = 1
     '';
   };
 }

@@ -28,6 +28,7 @@
     pkgs._1password
     pkgs._1password-gui
     pkgs.xsel
+    pkgs.mtr
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
