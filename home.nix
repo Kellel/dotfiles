@@ -77,6 +77,17 @@
     enable = true;
   };
 
+  programs.gnome-terminal = {
+    enable = true;
+    showMenubar = false;
+    profile.cd120af7-97f1-4c36-9c0b-d6fbc48328a7 = {
+      default = true;
+      visibleName = "default setup";
+      showScrollbar = false;
+      font = "NotoMono Nerd Font 12";
+    };
+  };
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
