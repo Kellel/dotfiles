@@ -86,6 +86,7 @@
       showScrollbar = false;
       font = "NotoMono Nerd Font 12";
       customCommand = "tmux";
+      audibleBell = false;
     };
   };
 
