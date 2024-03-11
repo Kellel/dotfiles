@@ -85,6 +85,7 @@
       visibleName = "default setup";
       showScrollbar = false;
       font = "NotoMono Nerd Font 12";
+      customCommand = "tmux";
     };
   };
 

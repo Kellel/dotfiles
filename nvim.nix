@@ -23,7 +23,6 @@ in {
           plugin = pkgs.vimPlugins.tokyonight-nvim;
           config = ''
             require("tokyonight").setup({
-              transparent = true,
             })
             vim.cmd[[colorscheme tokyonight-storm]]
           '';
