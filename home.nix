@@ -15,6 +15,8 @@
     };
   };
 
+  fonts.fontconfig.enable = true;
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
@@ -29,6 +31,10 @@
     pkgs._1password-gui
     pkgs.xsel
     pkgs.mtr
+    pkgs.nerdfonts
+    pkgs.gopls
+    pkgs.rust-analyzer
+    pkgs.ripgrep
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -52,6 +58,7 @@
 
   imports = [
     ./vim.nix 
+    ./nvim.nix
     ./tmux.nix
   ];
 
