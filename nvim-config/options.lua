@@ -1,6 +1,6 @@
 -- THEME
---vim.opt.termguicolors = true
---vim.opt.background='dark'
+vim.opt.termguicolors = false
+vim.opt.background='dark'
 
 -- QOL settings
 HOME = os.getenv("HOME")
@@ -37,7 +37,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- [[ LSP Diagnostics ]]
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+local signs = { Error = " ", Warn = " ", Hint = "☕", Info = " " }
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })

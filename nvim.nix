@@ -19,14 +19,26 @@ in {
     neovim = {
       plugins = [
         ## Colorscheme
+        #{
+        #  plugin = pkgs.vimPlugins.tokyonight-nvim;
+        #  config = ''
+        #    require("tokyonight").setup({
+        #    })
+        #    vim.cmd[[colorscheme tokyonight-storm]]
+        #  '';
+        #  type = "lua";
+        #}
+        #{
+        #  plugin = pkgs.vimPlugins.vim-colors-solarized;
+        #  config = ''
+        #  colorscheme solarized
+        #  '';
+        #}
         {
-          plugin = pkgs.vimPlugins.tokyonight-nvim;
+          plugin = pkgs.vimPlugins.everforest;
           config = ''
-            require("tokyonight").setup({
-            })
-            vim.cmd[[colorscheme tokyonight-storm]]
+          colorscheme everforest
           '';
-          type = "lua";
         }
 
         ## Treesitter
@@ -79,6 +91,8 @@ in {
           config = builtins.readFile nvim-config/setup/neo-tree.lua;
           type = "lua";
         }
+
+        pkgs.vimPlugins.fugitive
 
       ];
 

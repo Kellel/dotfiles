@@ -13,6 +13,9 @@
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
     };
+    overlays = [
+      (self: super: { everforest = super.callPackage ./packages/everforest.nix {}; })
+    ];
   };
 
   fonts.fontconfig.enable = true;
@@ -35,25 +38,16 @@
     pkgs.gopls
     pkgs.rust-analyzer
     pkgs.ripgrep
+    pkgs.nil
+    pkgs.gnomeExtensions.user-themes
   ];
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
   home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
   };
 
   home.sessionVariables = {
      EDITOR = "vim";
+     GTK_THEME = "Everforest-Dark-B-LB";
   };
 
   imports = [
@@ -80,6 +74,7 @@
   programs.gnome-terminal = {
     enable = true;
     showMenubar = false;
+    themeVariant = "dark";
     profile.cd120af7-97f1-4c36-9c0b-d6fbc48328a7 = {
       default = true;
       visibleName = "default setup";
@@ -87,6 +82,40 @@
       font = "NotoMono Nerd Font 12";
       customCommand = "tmux";
       audibleBell = false;
+    };
+  };
+
+  # Setup gnome theme
+  gtk = {
+    enable = true;
+    theme = {
+      package = pkgs.everforest;
+      name="Everforest-Dark-B-LB";
+    };
+    gtk4.extraConfig = {
+      gtk-theme-name="Everforest-Dark-B-LB";
+      gtk-application-prefer-dark-theme = 0;
+    };
+    gtk3.extraConfig = {
+      gtk-theme-name="Everforest-Dark-B-LB";
+      gtk-application-prefer-dark-theme = 0;
+    };
+  };
+  xdg.configFile = {
+    "gtk-4.0/assets".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";
+    "gtk-4.0/gtk.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css";
+    "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
+  };
+
+  dconf.settings = {
+    "org/gnome/desktop/input-sources" = {
+      xkb-options = ["caps:super"];
+    };
+    "org/gnome/shell" = {
+      disable-user-extensions = false;
+      enabled-extensions = [
+        "user-theme@gnome-shell-extensions.gcampax.github.com"
+      ];
     };
   };
 

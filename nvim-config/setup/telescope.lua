@@ -9,6 +9,7 @@ require('telescope').setup{
     project = {
       base_dirs = {
         {'~/repos', max_depth = 2},
+        {'~/cf-repos', max_depth = 3},
       },
     }
   }
