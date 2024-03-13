@@ -14,7 +14,7 @@
       set-window-option -g pane-base-index 1
       set-option -sg escape-time 50
       set -g status-left-length 20
-      set -g status-left '#[fg=green]#H '
+      set -g status-left '#[fg=#A7C080]#H '
       #set-window-option -g window-status-current-style bg=red
       setw -g monitor-activity on
       set -g visual-activity on
@@ -34,29 +34,33 @@
       set -g @yank_selection_mouse 'clipboard'
 
 
-      #### COLOUR (Solarized dark)
+      #### COLOR (everforest)
+      # bg_dim #1E2326
+      # bg0    #272E33
+      # bg2    #374145
+      # bg3    #414B50
+      # bg4    #
 
       # default statusbar colors
-      set-option -g status-style fg=yellow,bg=black #yellow and base02
+      set-option -g status-style fg='#D3C6AA',bg='#1E2326' 
+      set-option -g status-interval 1
 
       # default window title colors
-      set-window-option -g window-status-style fg=blue,bright,bg=default #base0 and default
-      #set-window-option -g window-status-style dim
+      set-window-option -g window-status-style fg='#3A515D',bg=default #base0 and default
 
       # active window title colors
-      set-window-option -g window-status-current-style fg=red,bright,bg=default #orange and default
-      #set-window-option -g window-status-current-style bright
+      set-window-option -g window-status-current-style fg='#E67E80',bg=default #orange and default
 
       # pane border
-      set-option -g pane-border-style bg=default,fg=blue #base02
-      set-option -g pane-active-border-style fg=green,bright #base01
+      set-option -g pane-border-style fg='#4F585E'
+      set-option -g pane-active-border-style fg='#543A48'
 
       # message text
-      set-option -g message-style fg=red,bright,bg=black #orange and base01
+      set-option -g message-style fg='#D3C6AA',bg='#1E2326'
 
       # pane number display
-      set-option -g display-panes-active-colour orange
-      set-option -g display-panes-colour blue #blue
+      set-option -g display-panes-active-colour '#E67E80'
+      set-option -g display-panes-colour '#3A515D'
 
       # clock
       set-window-option -g clock-mode-colour green #green

@@ -67,6 +67,30 @@
     };
   };
 
+  programs.bash = {
+    enable = true;
+    initExtra = ''
+      cname="167;192;128"
+      cdir="127;187;179"
+      # leave this block alone
+      code_color_name="\x1b[38;2;''${cname}m"
+      code_color_dir="\x1b[38;2;''${cdir}m"
+      code_color_reset='\x1b[0m'
+      
+      # leave this block alone
+      c_name=$(printf "''${code_color_name}")
+      c_dir=$(printf "''${code_color_dir}")
+      c_rst=$(printf "''${code_color_reset}")
+      export PS1='\[\e]0;\u@\h: \w\a\]''${debian_chroot:+($debian_chroot)}\[''${c_name}\]\u@\h\[''${c_rst}\]:\[''${c_dir}\]\w\[''${c_rst}\]\$ '
+
+      . /home/kellen/.local/share/cloudflare-warp-certs/config.sh
+
+      export PATH=$PATH:$HOME/go/bin/:/usr/local/go/bin
+      . "$HOME/.cargo/env"
+
+    '';
+  };
+
   programs.go = {
     enable = true;
   };
