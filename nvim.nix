@@ -13,6 +13,11 @@
         rev = rev;
       };
     };
+	unstable = import <unstable> {
+		config = {
+			allowUnfree = true;
+		};
+	};
 in {
   #main
   programs = {
@@ -37,6 +42,7 @@ in {
         {
           plugin = pkgs.vimPlugins.everforest;
           config = ''
+		  let g:everforest_transparent_background = 2
           colorscheme everforest
           '';
         }
@@ -93,6 +99,18 @@ in {
         }
 
         pkgs.vimPlugins.fugitive
+
+		{
+			plugin = unstable.vimPlugins.go-nvim;
+			config = builtins.readFile nvim-config/setup/go-nvim.lua;
+			type = "lua";
+		}
+
+		{
+			plugin = pkgs.vimPlugins.lualine-nvim;
+			config = builtins.readFile nvim-config/setup/lualine.lua;
+			type = "lua";
+		}
 
       ];
 

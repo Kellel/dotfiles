@@ -37,6 +37,7 @@
     pkgs.nerdfonts
     pkgs.gopls
     pkgs.rust-analyzer
+	pkgs.pyright
     pkgs.ripgrep
     pkgs.nil
     pkgs.gnomeExtensions.user-themes
