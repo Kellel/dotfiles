@@ -34,10 +34,11 @@
     pkgs._1password-gui
     pkgs.xsel
     pkgs.mtr
-    pkgs.nerdfonts
+    pkgs.nerd-fonts._0xproto
+    pkgs.nerd-fonts.noto
     pkgs.gopls
     pkgs.rust-analyzer
-	pkgs.pyright
+    pkgs.pyright
     pkgs.ripgrep
     pkgs.nil
     pkgs.gnomeExtensions.user-themes
@@ -84,11 +85,7 @@
       c_rst=$(printf "''${code_color_reset}")
       export PS1='\[\e]0;\u@\h: \w\a\]''${debian_chroot:+($debian_chroot)}\[''${c_name}\]\u@\h\[''${c_rst}\]:\[''${c_dir}\]\w\[''${c_rst}\]\$ '
 
-      . /home/kellen/.local/share/cloudflare-warp-certs/config.sh
-
       export PATH=$PATH:$HOME/go/bin/:/usr/local/go/bin
-      . "$HOME/.cargo/env"
-
     '';
   };
 
