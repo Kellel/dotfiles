@@ -33,7 +33,6 @@
     pkgs._1password-cli
     pkgs._1password-gui
     pkgs.xsel
-    pkgs.mtr
     pkgs.nerd-fonts._0xproto
     pkgs.nerd-fonts.droid-sans-mono
 	pkgs.nerd-fonts.noto
@@ -65,9 +64,17 @@
     userName = "Kellen Fox";
     userEmail = "kellen@cloudflare.com";
     extraConfig = {
+	  branch = { sort = "-committerdate"; };
+      tag = { sort = "version:refname"; };
+	  diff = { algorithm = "histogram"; colorMoved = "plain"; mnemonicPrefix = true; renames = true; };
+	  push = { default = "simple"; autoSetupRemote = true; followTags = true; };
+	  fetch = { prune = true; pruneTags = true; all = true; };
       pull = { rebase = true; };
       init = { defaultBranch = "main"; };
       core = { editor = "vim"; };
+	  help = { autocorrect = "prompt"; };
+	  rerere = { enabled = true; autoupdate = true; };
+	  rebase = { autoSquash = true; autoStash = true; updateRefs = true; };
     };
   };
 
