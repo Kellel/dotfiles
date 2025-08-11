@@ -110,7 +110,7 @@
       default = true;
       visibleName = "default setup";
       showScrollbar = false;
-      font = "0xProto Nerd Font Mono 12";
+      font = "Noto Mono 12";
       customCommand = "tmux";
       audibleBell = false;
     };
