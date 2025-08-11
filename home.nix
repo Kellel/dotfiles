@@ -36,6 +36,7 @@
     pkgs.nerd-fonts._0xproto
     pkgs.nerd-fonts.droid-sans-mono
 	pkgs.nerd-fonts.noto
+	pkgs.nerd-fonts.hack
     pkgs.gopls
     pkgs.rust-analyzer
     pkgs.pyright
@@ -110,7 +111,7 @@
       default = true;
       visibleName = "default setup";
       showScrollbar = false;
-      font = "Noto Mono 12";
+      font = "Hack Nerd Font Mono 12";
       customCommand = "tmux";
       audibleBell = false;
     };
