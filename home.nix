@@ -36,12 +36,14 @@
     pkgs.mtr
     pkgs.nerd-fonts._0xproto
     pkgs.nerd-fonts.droid-sans-mono
+	pkgs.nerd-fonts.noto
     pkgs.gopls
     pkgs.rust-analyzer
     pkgs.pyright
     pkgs.ripgrep
     pkgs.nil
     pkgs.gnomeExtensions.user-themes
+	pkgs.codeium
   ];
 
   home.file = {
@@ -101,7 +103,7 @@
       default = true;
       visibleName = "default setup";
       showScrollbar = false;
-      font = "NotoMono Nerd Font 12";
+      font = "0xProto Nerd Font Mono 12";
       customCommand = "tmux";
       audibleBell = false;
     };
