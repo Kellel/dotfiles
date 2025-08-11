@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, libs, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -30,12 +30,12 @@
     pkgs.unzip
     pkgs.jq
     pkgs.sipcalc
-    pkgs._1password
+    pkgs._1password-cli
     pkgs._1password-gui
     pkgs.xsel
     pkgs.mtr
     pkgs.nerd-fonts._0xproto
-    pkgs.nerd-fonts.noto
+    pkgs.nerd-fonts.droid-sans-mono
     pkgs.gopls
     pkgs.rust-analyzer
     pkgs.pyright
