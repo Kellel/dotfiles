@@ -55,6 +55,7 @@ in
     pkgs.nil
     pkgs.rustup
     pkgs.opencode
+    pkgs.gnomeExtensions.user-themes
   ] ++ machinePackages;
 
   home.file = {
