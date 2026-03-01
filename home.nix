@@ -33,17 +33,13 @@
     pkgs._1password-cli
     pkgs._1password-gui
     pkgs.xsel
-    pkgs.nerd-fonts._0xproto
-    pkgs.nerd-fonts.droid-sans-mono
-	pkgs.nerd-fonts.noto
-	pkgs.nerd-fonts.hack
+	pkgs.nerdfonts
     pkgs.gopls
     pkgs.rust-analyzer
     pkgs.pyright
     pkgs.ripgrep
     pkgs.nil
     pkgs.gnomeExtensions.user-themes
-	pkgs.codeium
   ];
 
   home.file = {

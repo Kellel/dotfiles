@@ -53,7 +53,6 @@ cmp.setup({
   },
 
   sources = {
-    { name = 'codeium' },
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     { name = 'nvim_lua' }, 
@@ -70,7 +69,6 @@ cmp.setup({
     format = lspkind.cmp_format {
       with_text = true,
       menu = {
-		codeium = "[codeium]",
         buffer = "[buf]",
         nvim_lsp = "[LSP]",
         nvim_lua = "[API]",
@@ -118,5 +116,3 @@ cmp.setup.cmdline(':', {
     { name = 'cmdline' }
   })
 })
-
-

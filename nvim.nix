@@ -79,12 +79,6 @@ in {
         pkgs.vimPlugins.cmp_luasnip
 		pkgs.vimPlugins.plenary-nvim
 
-		{
-          plugin = pkgs.vimPlugins.windsurf-nvim;
-		  config = builtins.readFile nvim-config/setup/windsurf.lua;
-		  type = "lua";
-		}
-
         # Adds pictograms to stuff 
         pkgs.vimPlugins.lspkind-nvim
 
