@@ -54,6 +54,13 @@
      GTK_THEME = "Everforest-Dark-B-LB";
   };
 
+  home.sessionPath = [
+    "$HOME/.platformio/penv/bin"
+    "$HOME/go/bin/"
+    "/usr/local/go/bin"
+    "$HOME/.nix-profile/bin"
+  ];
+
   imports = [
     ./vim.nix 
     ./nvim.nix
@@ -74,7 +81,7 @@
       init = { defaultBranch = "main"; };
       core = { editor = "vim"; };
 	  help = { autocorrect = "prompt"; };
-	  rerere = { enabled = true; autoupdate = true; };
+	  rrere = { enabled = true; autoupdate = true; };
 	  rebase = { autoSquash = true; autoStash = true; updateRefs = true; };
     };
   };
@@ -94,8 +101,6 @@
       c_dir=$(printf "''${code_color_dir}")
       c_rst=$(printf "''${code_color_reset}")
       export PS1='\[\e]0;\u@\h: \w\a\]''${debian_chroot:+($debian_chroot)}\[''${c_name}\]\u@\h\[''${c_rst}\]:\[''${c_dir}\]\w\[''${c_rst}\]\$ '
-
-      export PATH=$PATH:$HOME/go/bin/:/usr/local/go/bin
     '';
   };
 

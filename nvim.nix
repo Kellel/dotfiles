@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  unstable ? pkgs,
   ...
 }: let
   fromGitHub = rev: ref: repo:
@@ -13,11 +14,6 @@
         rev = rev;
       };
     };
-	unstable = import <unstable> {
-		config = {
-			allowUnfree = true;
-		};
-	};
 in {
   #main
   programs = {
