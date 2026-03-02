@@ -23,7 +23,7 @@ vim.opt.number = true
 
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
 
-local box_border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' }
+local box_border = 'rounded'
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`

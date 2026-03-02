@@ -2,7 +2,7 @@ local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local float_style = {
-  border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
+  border = 'rounded',
   max_width = 90,
   max_height = 30,
   focusable = false,
