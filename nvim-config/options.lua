@@ -1,6 +1,6 @@
 -- THEME
 vim.opt.termguicolors = false
-vim.opt.background='dark'
+vim.opt.background = 'dark'
 
 -- QOL settings
 local home = os.getenv("HOME")
@@ -10,7 +10,7 @@ vim.opt.undodir = home .. '/.config/nvim/tmp/undo_files/'
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.smartindent = true
-vim.opt.scrolloff=10
+vim.opt.scrolloff = 10
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.relativenumber = false
@@ -22,6 +22,8 @@ vim.opt.number = true
 --vim.opt.colorcolumn = '100'
 
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
+
+local box_border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' }
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -44,7 +46,7 @@ vim.diagnostic.config({
   virtual_text = true,
   update_in_insert = false,
   float = {
-    border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
+    border = box_border,
     source = 'if_many',
     focusable = false,
     close_events = { 'BufHidden', 'CursorMoved', 'CursorMovedI' },
@@ -58,7 +60,7 @@ vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
   callback = function()
     vim.diagnostic.open_float(nil, {
       focus = false,
-      border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
+      border = box_border,
       focusable = false,
     })
   end,

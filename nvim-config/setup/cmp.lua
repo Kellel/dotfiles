@@ -1,6 +1,6 @@
+local cmp = require('cmp')
 local lspkind = require('lspkind')
-local luasnip = require("luasnip")
-local cmp = require'cmp'
+local luasnip = require('luasnip')
 
 local function has_words_before()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -11,7 +11,7 @@ end
 
 cmp.setup({
   mapping = {
-    ["<Tab>"] = cmp.mapping(function(fallback)
+    ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
       -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable() 
@@ -46,7 +46,7 @@ cmp.setup({
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
-    { name = 'nvim_lua' }, 
+    { name = 'nvim_lua' },
     { name = 'buffer' },
     { name = 'path' },
   },
@@ -71,13 +71,13 @@ cmp.setup({
 
   snippet = {
     expand = function(args)
-      require'luasnip'.lsp_expand(args.body)
+      luasnip.lsp_expand(args.body)
     end,
   },
 
   experimental = {
     native_menu = false,
-    ghost_text = true
+    ghost_text = true,
   },
 })
 

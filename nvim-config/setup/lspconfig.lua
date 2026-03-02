@@ -64,6 +64,17 @@ local function map_if_supported(buffer_opts, client, method, lhs, rhs, desc)
   end
 end
 
+local LSP_KEYMAPS = {
+  { 'textDocument/declaration', 'gD', vim.lsp.buf.declaration, 'LSP declaration' },
+  { 'textDocument/definition', 'gd', vim.lsp.buf.definition, 'LSP definition' },
+  { 'textDocument/hover', 'K', vim.lsp.buf.hover, 'LSP hover' },
+  { 'textDocument/signatureHelp', '<C-k>', vim.lsp.buf.signature_help, 'LSP signature help' },
+  { 'textDocument/implementation', 'gi', vim.lsp.buf.implementation, 'LSP implementation' },
+  { 'textDocument/typeDefinition', '<leader>D', vim.lsp.buf.type_definition, 'LSP type definition' },
+  { 'textDocument/rename', '<leader>rn', vim.lsp.buf.rename, 'LSP rename symbol' },
+  { 'textDocument/references', 'gr', vim.lsp.buf.references, 'LSP references' },
+}
+
 local function format_if_supported(client, buffer_opts, desc)
   if lsp_supports_method(client, 'textDocument/formatting') or lsp_supports_method(client, 'textDocument/rangeFormatting') then
     vim.keymap.set('n', '<leader>fm', function()
@@ -77,14 +88,9 @@ local function on_attach(client, bufnr)
 
   local opts = { buffer = bufnr }
 
-  map_if_supported(opts, client, 'textDocument/declaration', 'gD', vim.lsp.buf.declaration, 'LSP declaration')
-  map_if_supported(opts, client, 'textDocument/definition', 'gd', vim.lsp.buf.definition, 'LSP definition')
-  map_if_supported(opts, client, 'textDocument/hover', 'K', vim.lsp.buf.hover, 'LSP hover')
-  map_if_supported(opts, client, 'textDocument/signatureHelp', '<C-k>', vim.lsp.buf.signature_help, 'LSP signature help')
-  map_if_supported(opts, client, 'textDocument/implementation', 'gi', vim.lsp.buf.implementation, 'LSP implementation')
-  map_if_supported(opts, client, 'textDocument/typeDefinition', '<leader>D', vim.lsp.buf.type_definition, 'LSP type definition')
-  map_if_supported(opts, client, 'textDocument/rename', '<leader>rn', vim.lsp.buf.rename, 'LSP rename symbol')
-  map_if_supported(opts, client, 'textDocument/references', 'gr', vim.lsp.buf.references, 'LSP references')
+  for _, mapping in ipairs(LSP_KEYMAPS) do
+    map_if_supported(opts, client, mapping[1], mapping[2], mapping[3], mapping[4])
+  end
 
   vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, vim.tbl_extend('force', opts, { desc = 'Add workspace folder' }))
   vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, vim.tbl_extend('force', opts, { desc = 'Remove workspace folder' }))

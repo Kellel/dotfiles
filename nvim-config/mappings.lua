@@ -27,31 +27,33 @@ end
 map('n', '<leader>lg', execute_if_available('LazyGit'), 'Open LazyGit')
 
 -- lsp trouble
-map('n', '<leader>tt', execute_if_available('TroubleToggle document_diagnostics', 'Trouble plugin is not installed'), 'Open document diagnostics in Trouble')
-map('n', '<leader>tw', execute_if_available('TroubleToggle workspace_diagnostics', 'Trouble plugin is not installed'), 'Open workspace diagnostics in Trouble')
-map('n', '<leader>tq', execute_if_available('TroubleToggle quickfix', 'Trouble plugin is not installed'), 'Open quickfix in Trouble')
-map('n', '<leader>td', execute_if_available('TroubleToggle lsp_definitions', 'Trouble plugin is not installed'), 'Open definitions in Trouble')
-map('n', '<leader>tr', execute_if_available('TroubleToggle lsp_references', 'Trouble plugin is not installed'), 'Open references in Trouble')
+local trouble_mappings = {
+  { '<leader>tt', 'document_diagnostics', 'Open document diagnostics in Trouble' },
+  { '<leader>tw', 'workspace_diagnostics', 'Open workspace diagnostics in Trouble' },
+  { '<leader>tq', 'quickfix', 'Open quickfix in Trouble' },
+  { '<leader>td', 'lsp_definitions', 'Open definitions in Trouble' },
+  { '<leader>tr', 'lsp_references', 'Open references in Trouble' },
+}
+
+for _, mapping in ipairs(trouble_mappings) do
+  map('n', mapping[1], execute_if_available('TroubleToggle ' .. mapping[2], 'Trouble plugin is not installed'), mapping[3])
+end
 
 -- telescope
-map('n', '<leader>ff', function()
-  require('telescope.builtin').find_files()
-end, 'Find files')
-map('n', '<leader>fg', function()
-  require('telescope.builtin').live_grep()
-end, 'Live grep')
-map('n', '<leader>fb', function()
-  require('telescope.builtin').buffers()
-end, 'Find buffers')
-map('n', '<leader>fh', function()
-  require('telescope.builtin').help_tags()
-end, 'Search help')
-map('n', '<leader>fd', function()
-  require('telescope.builtin').diagnostics()
-end, 'Search diagnostics')
-map('n', '<leader>fi', function()
-  require('telescope.builtin').lsp_implementations()
-end, 'Find implementations')
+local telescope_mappings = {
+  { '<leader>ff', 'find_files', 'Find files' },
+  { '<leader>fg', 'live_grep', 'Live grep' },
+  { '<leader>fb', 'buffers', 'Find buffers' },
+  { '<leader>fh', 'help_tags', 'Search help' },
+  { '<leader>fd', 'diagnostics', 'Search diagnostics' },
+  { '<leader>fi', 'lsp_implementations', 'Find implementations' },
+}
+
+for _, mapping in ipairs(telescope_mappings) do
+  map('n', mapping[1], function()
+    require('telescope.builtin')[mapping[2]]()
+  end, mapping[3])
+end
 map('n', '<leader>fw', function()
   local ok = pcall(function()
     vim.cmd('Telescope telescope-cargo-workspace switch')
