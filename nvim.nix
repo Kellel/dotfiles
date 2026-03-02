@@ -73,8 +73,11 @@ in {
           type = "lua";
         }
         pkgs.vimPlugins.cmp-nvim-lsp
+        pkgs.vimPlugins.cmp-git
+        pkgs.vimPlugins.cmp-nvim-lua
         pkgs.vimPlugins.cmp-buffer
         pkgs.vimPlugins.cmp-cmdline
+        pkgs.vimPlugins.cmp-path
         pkgs.vimPlugins.cmp_luasnip
 		pkgs.vimPlugins.plenary-nvim
 

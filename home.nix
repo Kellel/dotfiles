@@ -6,13 +6,9 @@
   home.username = "kellen";
   home.homeDirectory = "/home/kellen";
 
-  home.stateVersion = "23.11"; # Please read the comment before changing.
+  home.stateVersion = "25.11"; # Please read the comment before changing.
 
   nixpkgs = {
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = (_: true);
-    };
     overlays = [
       (self: super: { everforest = super.callPackage ./packages/everforest.nix {}; })
     ];
@@ -33,21 +29,23 @@
     pkgs._1password-cli
     pkgs._1password-gui
     pkgs.xsel
-	pkgs.nerdfonts
+    pkgs.nerd-fonts._0xproto
+    pkgs.nerd-fonts.droid-sans-mono
+    pkgs.nerd-fonts.hack
     pkgs.gopls
     pkgs.pyright
     pkgs.ripgrep
     pkgs.nil
-    pkgs.gnomeExtensions.user-themes
     pkgs.rustup
   ];
 
   home.file = {
+    ".themes/${config.gtk.theme.name}".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
   };
 
   home.sessionVariables = {
     EDITOR = "nvim";
-    GTK_THEME = "Everforest-Dark-B-LB";
+    GTK_THEME = "Everforest-Dark-B-LB:dark";
     RUSTUP_HOME = "${config.home.homeDirectory}/.rustup";
     CARGO_HOME = "${config.home.homeDirectory}/.cargo";
   };
@@ -65,9 +63,29 @@
     CARGO_HOME="${config.home.homeDirectory}/.cargo"
     export RUSTUP_HOME CARGO_HOME
     mkdir -p "$RUSTUP_HOME" "$CARGO_HOME"
-    ${pkgs.rustup}/bin/rustup toolchain install stable
-    ${pkgs.rustup}/bin/rustup default stable
-    ${pkgs.rustup}/bin/rustup component add rustfmt clippy rust-src rust-analyzer
+
+    RUSTUP_BIN="${pkgs.rustup}/bin/rustup"
+
+    STABLE_TOOLCHAIN="stable"
+
+    if ! "$RUSTUP_BIN" run "$STABLE_TOOLCHAIN" rustc --version >/dev/null 2>&1; then
+      "$RUSTUP_BIN" toolchain uninstall "$STABLE_TOOLCHAIN" || true
+      "$RUSTUP_BIN" toolchain install "$STABLE_TOOLCHAIN"
+    fi
+
+    "$RUSTUP_BIN" default "$STABLE_TOOLCHAIN"
+
+    for component in rustfmt clippy rust-src rust-analyzer; do
+      if ! "$RUSTUP_BIN" component add --toolchain "$STABLE_TOOLCHAIN" "$component"; then
+        if [ "$component" = "rust-analyzer" ]; then
+          echo "warning: rust-analyzer not available for this toolchain; skipping."
+          continue
+        fi
+
+        echo "error: failed to install rustup component '$component'" >&2
+        exit 1
+      fi
+    done
   '';
 
   imports = [
@@ -77,20 +95,54 @@
 
   programs.git = {
     enable = true;
-    userName = "Kellen Fox";
-    userEmail = "kellen@cloudflare.com";
-    extraConfig = {
-	  branch = { sort = "-committerdate"; };
-      tag = { sort = "version:refname"; };
-	  diff = { algorithm = "histogram"; colorMoved = "plain"; mnemonicPrefix = true; renames = true; };
-	  push = { default = "simple"; autoSetupRemote = true; followTags = true; };
-	  fetch = { prune = true; pruneTags = true; all = true; };
-      pull = { rebase = true; };
-      init = { defaultBranch = "main"; };
-      core = { editor = "nvim"; };
-	  help = { autocorrect = "prompt"; };
-	  rrere = { enabled = true; autoupdate = true; };
-	  rebase = { autoSquash = true; autoStash = true; updateRefs = true; };
+    settings = {
+      branch = {
+        sort = "-committerdate";
+      };
+      tag = {
+        sort = "version:refname";
+      };
+      diff = {
+        algorithm = "histogram";
+        colorMoved = "plain";
+        mnemonicPrefix = true;
+        renames = true;
+      };
+      push = {
+        default = "simple";
+        autoSetupRemote = true;
+        followTags = true;
+      };
+      fetch = {
+        prune = true;
+        pruneTags = true;
+        all = true;
+      };
+      pull = {
+        rebase = true;
+      };
+      init = {
+        defaultBranch = "main";
+      };
+      core = {
+        editor = "nvim";
+      };
+      help = {
+        autocorrect = "prompt";
+      };
+      rerere = {
+        enabled = true;
+        autoupdate = true;
+      };
+      rebase = {
+        autoSquash = true;
+        autoStash = true;
+        updateRefs = true;
+      };
+      user = {
+        name = "Kellen Fox";
+        email = "kellen@cloudflare.com";
+      };
     };
   };
 
@@ -124,8 +176,32 @@
       default = true;
       visibleName = "default setup";
       showScrollbar = false;
-      font = "Hack Nerd Font Mono 12";
-      customCommand = "tmux";
+      font = "0xProto Nerd Font Mono 12";
+      customCommand = "${pkgs.tmux}/bin/tmux";
+      loginShell = true;
+      colors = {
+        foregroundColor = "#D3C6AA";
+        backgroundColor = "#1E2326";
+        boldColor = "#EBDBB2";
+        palette = [
+          "#1E2326"
+          "#E67E80"
+          "#A7C080"
+          "#DBBC7F"
+          "#7AA89F"
+          "#D699B6"
+          "#83C092"
+          "#D3C6AA"
+          "#4F585E"
+          "#E69875"
+          "#A7C080"
+          "#DBBC7F"
+          "#7AA89F"
+          "#D699B6"
+          "#9FD3A1"
+          "#E6DBAF"
+        ];
+      };
       audibleBell = false;
     };
   };
@@ -135,26 +211,76 @@
     enable = true;
     theme = {
       package = pkgs.everforest;
-      name="Everforest-Dark-B-LB";
+      name = "Everforest-Dark-B-LB";
     };
     gtk4.extraConfig = {
-      gtk-theme-name="Everforest-Dark-B-LB";
-      gtk-application-prefer-dark-theme = 0;
+      gtk-theme-name = "Everforest-Dark-B-LB";
+      gtk-application-prefer-dark-theme = true;
     };
     gtk3.extraConfig = {
-      gtk-theme-name="Everforest-Dark-B-LB";
-      gtk-application-prefer-dark-theme = 0;
+      gtk-theme-name = "Everforest-Dark-B-LB";
+      gtk-application-prefer-dark-theme = true;
     };
   };
   xdg.configFile = {
+    "gtk-3.0/gtk.css".source = pkgs.writeText "kellen-gtk3-titlebar-override.css" ''
+      @import url("file://${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-3.0/gtk.css");
+
+      headerbar,
+      .background.csd headerbar,
+      window.background.csd headerbar,
+      .titlebar {
+        background-color: #242d33;
+        border-bottom-color: #3c4954;
+      }
+
+      box.vertical headerbar {
+        background-color: #242d33;
+      }
+    '';
     "gtk-4.0/assets".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";
-    "gtk-4.0/gtk.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css";
+    "gtk-4.0/gtk.css".source = pkgs.writeText "kellen-gtk4-titlebar-override.css" ''
+      @import url("file://${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css");
+
+      headerbar,
+      .background.csd headerbar,
+      window.background.csd headerbar,
+      .titlebar {
+        background-color: #242d33;
+        border-bottom-color: #3c4954;
+      }
+
+      headerbar {
+        box-shadow: inset 0 -1px #3c4954;
+      }
+
+      headerbar:backdrop {
+        background-color: #222b32;
+      }
+    '';
     "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
+  };
+
+  xdg.dataFile = {
+    "themes/${config.gtk.theme.name}".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+    "gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com".source =
+      "${pkgs.gnomeExtensions.user-themes}/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com";
   };
 
   dconf.settings = {
     "org/gnome/desktop/input-sources" = {
       xkb-options = ["caps:super"];
+    };
+    "org/gnome/desktop/interface" = {
+      gtk-theme = "Everforest-Dark-B-LB";
+      color-scheme = "prefer-dark";
+    };
+    "org/gnome/desktop/wm/preferences" = {
+      theme = "Everforest-Dark-B-LB";
+      titlebar-font = "Adwaita Sans Bold 11";
+    };
+    "org/gnome/shell/extensions/user-theme" = {
+      name = "Everforest-Dark-B-LB";
     };
     "org/gnome/shell" = {
       disable-user-extensions = false;
@@ -166,5 +292,4 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-
 }

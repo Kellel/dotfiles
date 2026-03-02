@@ -2,7 +2,7 @@
 {
   programs.tmux = {
     enable = true;
-    terminal = "tmux-256-color";
+    terminal = "tmux-256color";
     historyLimit = 100000;
     plugins = with pkgs.tmuxPlugins; [
       yank
@@ -27,9 +27,12 @@
       unbind p
       bind p paste-buffer
       set -g mouse on
-      set -g default-terminal "xterm-color"
-      set-option -ga terminal-overrides ",xterm-color:Tc:smcup@:rmcup@"
+      set -g default-shell ${pkgs.bash}/bin/bash
+      set -g default-command "env -u __HM_SESS_VARS_SOURCED ${pkgs.bash}/bin/bash -l"
+      set -g default-terminal "tmux-256color"
+      set-option -ga terminal-overrides ",tmux-256color:Tc:smcup@:rmcup@"
       set -g set-clipboard on
+      set -g update-environment "DISPLAY SSH_ASKPASS SSH_ASKPASS_REQUIRE SSH_AUTH_SOCK SSH_AGENT_PID SSH_CONNECTION WINDOWID XAUTHORITY"
       set -g @yank_selection 'clipboard'
       set -g @yank_selection_mouse 'clipboard'
 

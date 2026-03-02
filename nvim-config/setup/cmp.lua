@@ -86,12 +86,17 @@ cmp.setup({
 })
 
 -- Set configuration for specific filetype.
+local git_commit_sources = {
+  { name = 'buffer' },
+}
+
+local has_cmp_git, _ = pcall(require, 'cmp_git')
+if has_cmp_git then
+  table.insert(git_commit_sources, 1, { name = 'cmp_git' })
+end
+
 cmp.setup.filetype('gitcommit', {
-  sources = cmp.config.sources({
-    { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
-  }, {
-    { name = 'buffer' },
-  })
+  sources = cmp.config.sources(git_commit_sources)
 })
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).

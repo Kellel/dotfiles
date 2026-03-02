@@ -1,4 +1,5 @@
 local lspconfig = require('lspconfig')
+local use_modern_api = type(vim.lsp.config) == 'table' and type(vim.lsp.enable) == 'function'
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local float_style = {
@@ -68,8 +69,22 @@ end
 local LSP_KEYMAPS = {
   { 'textDocument/declaration', 'gD', vim.lsp.buf.declaration, 'LSP declaration' },
   { 'textDocument/definition', 'gd', vim.lsp.buf.definition, 'LSP definition' },
-  { 'textDocument/hover', 'K', vim.lsp.buf.hover, 'LSP hover' },
-  { 'textDocument/signatureHelp', '<C-k>', vim.lsp.buf.signature_help, 'LSP signature help' },
+  {
+    'textDocument/hover',
+    'K',
+    function()
+      vim.lsp.buf.hover({ border = float_style.border })
+    end,
+    'LSP hover',
+  },
+  {
+    'textDocument/signatureHelp',
+    '<C-k>',
+    function()
+      vim.lsp.buf.signature_help({ border = float_style.border })
+    end,
+    'LSP signature help',
+  },
   { 'textDocument/implementation', 'gi', vim.lsp.buf.implementation, 'LSP implementation' },
   { 'textDocument/typeDefinition', '<leader>D', vim.lsp.buf.type_definition, 'LSP type definition' },
   { 'textDocument/rename', '<leader>rn', vim.lsp.buf.rename, 'LSP rename symbol' },
@@ -111,6 +126,12 @@ local function setup_server(name, opts)
     capabilities = capabilities,
     on_attach = on_attach,
   }, opts)
+
+  if use_modern_api then
+    vim.lsp.config[name] = vim.tbl_deep_extend('force', vim.lsp.config[name] or {}, opts)
+    vim.lsp.enable(name)
+    return
+  end
 
   lspconfig[name].setup(opts)
 end

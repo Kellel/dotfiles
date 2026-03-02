@@ -28,6 +28,8 @@ vim.opt.showmode = false
 
 local box_border = 'rounded'
 
+vim.opt.winborder = box_border
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -40,11 +42,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- [[ LSP Diagnostics ]]
-local signs = { Error = " ", Warn = " ", Hint = "☕", Info = " " }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
 vim.diagnostic.config({
   virtual_text = true,
   update_in_insert = false,
@@ -53,6 +50,20 @@ vim.diagnostic.config({
     source = 'if_many',
     focusable = false,
     close_events = { 'BufHidden', 'CursorMoved', 'CursorMovedI' },
+  },
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = ' ',
+      [vim.diagnostic.severity.WARN] = ' ',
+      [vim.diagnostic.severity.INFO] = ' ',
+      [vim.diagnostic.severity.HINT] = '☕',
+    },
+    numhl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+      [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+      [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+    },
   },
 })
 -- You will likely want to reduce updatetime which affects CursorHold
