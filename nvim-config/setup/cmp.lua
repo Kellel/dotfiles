@@ -2,12 +2,22 @@ local cmp = require('cmp')
 local lspkind = require('lspkind')
 local luasnip = require('luasnip')
 
+local insert_modes = { 'i', 's' }
+
 local function has_words_before()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   local current_line = vim.api.nvim_buf_get_lines(0, line - 1, line, false)[1]
 
   return col ~= 0 and current_line:sub(col, col):match('%s') == nil
 end
+
+local common_source_order = {
+  { name = 'nvim_lsp' },
+  { name = 'luasnip' },
+  { name = 'nvim_lua' },
+  { name = 'buffer' },
+  { name = 'path' },
+}
 
 cmp.setup({
   mapping = {
@@ -23,7 +33,7 @@ cmp.setup({
       else
         fallback()
       end
-    end, { "i", "s" }),
+    end, insert_modes),
 
     ["<S-Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
@@ -33,7 +43,7 @@ cmp.setup({
       else
         fallback()
       end
-    end, { "i", "s" }),
+    end, insert_modes),
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-n>'] = cmp.mapping.select_next_item(),
     ['<C-k>'] = cmp.mapping.scroll_docs(-4),
@@ -43,13 +53,7 @@ cmp.setup({
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
   },
 
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-    { name = 'nvim_lua' },
-    { name = 'buffer' },
-    { name = 'path' },
-  },
+  sources = common_source_order,
 
   window = {
     completion = cmp.config.window.bordered(),

@@ -7,19 +7,20 @@ local float_style = {
   max_height = 30,
   focusable = false,
 }
+local lsp_float_close_events = { 'CursorMoved', 'BufHidden', 'InsertCharPre' }
 
 vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = float_style.border,
   max_width = float_style.max_width,
   max_height = float_style.max_height,
   focusable = float_style.focusable,
-  close_events = { 'CursorMoved', 'BufHidden', 'InsertCharPre' },
+  close_events = lsp_float_close_events,
 })
 
 vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
   border = float_style.border,
   focusable = float_style.focusable,
-  close_events = { 'CursorMoved', 'BufHidden', 'InsertCharPre' },
+  close_events = lsp_float_close_events,
 })
 
 local function code_action(opts)
@@ -114,14 +115,20 @@ local function setup_server(name, opts)
   lspconfig[name].setup(opts)
 end
 
-setup_server('clangd')
-setup_server('cmake')
-setup_server('dockerls')
-setup_server('nil_ls')
-setup_server('buf_ls')
-setup_server('gopls')
-setup_server('ansiblels')
-setup_server('vimls')
+local lsp_servers = {
+  'clangd',
+  'cmake',
+  'dockerls',
+  'nil_ls',
+  'buf_ls',
+  'gopls',
+  'ansiblels',
+  'vimls',
+}
+
+for _, server in ipairs(lsp_servers) do
+  setup_server(server)
+end
 setup_server('pyright', {
   settings = {
     python = {
@@ -132,12 +139,8 @@ setup_server('pyright', {
   },
 })
 
-local rust_opts = {}
 local rust_cmd = rust_analyzer_cmd()
-if rust_cmd ~= nil then
-  rust_opts.cmd = { rust_cmd }
-end
-setup_server('rust_analyzer', rust_opts)
+setup_server('rust_analyzer', rust_cmd ~= nil and { cmd = { rust_cmd } } or {})
 
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open diagnostics float' })
 vim.keymap.set('n', '<leader>dn', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic' })
