@@ -1,23 +1,5 @@
+local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-require'lspconfig'.clangd.setup{capabilities=capabilities}
-require'lspconfig'.rust_analyzer.setup{capabilities=capabilities} -- This is setup by rust-tools
-require'lspconfig'.cmake.setup{capabilities=capabilities}
-require'lspconfig'.dockerls.setup{capabilities=capabilities}
-require'lspconfig'.nil_ls.setup{capabilities=capabilities}
-require'lspconfig'.buf_ls.setup{capabilities=capabilities}
-require'lspconfig'.gopls.setup{capabilities=capabilities}
-require'lspconfig'.ansiblels.setup{}
-require'lspconfig'.pyright.setup{
-  capabilities=capabilities,
-  settings = {
-    python = {
-      analysis = {
-        typeCheckingMode = "off",
-      }
-    }
-  }
-}
-require'lspconfig'.vimls.setup{}
 
 local function code_action(opts)
   if vim.fn.exists(':CodeActionMenu') == 2 then
@@ -27,42 +9,135 @@ local function code_action(opts)
   end
 end
 
--- Global mappings.
--- See `:help vim.diagnostic.*` for documentation on any of the below functions
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
-vim.keymap.set('n', '<leader>dn', vim.diagnostic.goto_prev)
-vim.keymap.set('n', '<leader>dp', vim.diagnostic.goto_next)
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+local function rust_analyzer_cmd()
+  local candidates = {
+    vim.fn.expand('$CARGO_HOME/bin/rust-analyzer'),
+    vim.fn.expand('~/.cargo/bin/rust-analyzer'),
+  }
 
--- Use LspAttach autocommand to only map the following keys
--- after the language server attaches to the current buffer
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-  callback = function(ev)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+  for _, cmd in ipairs(candidates) do
+    if cmd ~= nil and cmd ~= '' and vim.fn.executable(cmd) == 1 then
+      return cmd
+    end
+  end
 
-    -- Buffer local mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local opts = { buffer = ev.buf }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-    vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-    vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    vim.keymap.set('n', '<leader>wl', function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, opts)
-    vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-    vim.keymap.set('n', '<leader>ca', function()
-      code_action({ apply = true })
-    end, opts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+  if vim.fn.executable('rust-analyzer') == 1 then
+    return 'rust-analyzer'
+  end
+
+  return nil
+end
+
+local function lsp_supports_method(client, method)
+  if client == nil or client.server_capabilities == nil then
+    return false
+  end
+
+  local capability = client.server_capabilities[method]
+  if capability == nil or capability == false then
+    return false
+  end
+
+  if type(capability) == 'boolean' then
+    return capability
+  end
+
+  return true
+end
+
+local function on_attach(client, bufnr)
+  vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+  local opts = { buffer = bufnr }
+
+  local function map_if(provider, lhs, rhs, desc)
+    if lsp_supports_method(client, provider) then
+      vim.keymap.set('n', lhs, rhs, vim.tbl_extend('force', opts, { desc = desc }))
+    end
+  end
+
+  map_if('declarationProvider', 'gD', vim.lsp.buf.declaration, 'LSP declaration')
+  map_if('definitionProvider', 'gd', vim.lsp.buf.definition, 'LSP definition')
+  map_if('hoverProvider', 'K', vim.lsp.buf.hover, 'LSP hover')
+  map_if('signatureHelpProvider', '<C-k>', vim.lsp.buf.signature_help, 'LSP signature help')
+  map_if('implementationProvider', 'gi', vim.lsp.buf.implementation, 'LSP implementation')
+  map_if('typeDefinitionProvider', '<leader>D', vim.lsp.buf.type_definition, 'LSP type definition')
+  map_if('renameProvider', '<leader>rn', vim.lsp.buf.rename, 'LSP rename symbol')
+  map_if('referencesProvider', 'gr', vim.lsp.buf.references, 'LSP references')
+
+  vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, vim.tbl_extend('force', opts, { desc = 'Add workspace folder' }))
+  vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, vim.tbl_extend('force', opts, { desc = 'Remove workspace folder' }))
+  vim.keymap.set('n', '<leader>wl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, vim.tbl_extend('force', opts, { desc = 'List workspace folders' }))
+  vim.keymap.set('n', '<leader>ca', function()
+    code_action({ apply = true })
+  end, vim.tbl_extend('force', opts, { desc = 'LSP code action' }))
+
+  if lsp_supports_method(client, 'documentFormattingProvider') or lsp_supports_method(client, 'documentRangeFormattingProvider') then
     vim.keymap.set('n', '<leader>fm', function()
-      vim.lsp.buf.format { async = true }
-    end, opts)
-    end,
-  })
+      vim.lsp.buf.format({ async = true })
+    end, vim.tbl_extend('force', opts, { desc = 'Format buffer' }))
+  end
+end
+
+local function setup_server(name, opts)
+  opts = opts or {}
+  opts = vim.tbl_deep_extend('force', {
+    capabilities = capabilities,
+    on_attach = on_attach,
+  }, opts)
+
+  lspconfig[name].setup(opts)
+end
+
+setup_server('clangd')
+setup_server('cmake')
+setup_server('dockerls')
+setup_server('nil_ls')
+setup_server('buf_ls')
+setup_server('gopls')
+setup_server('ansiblels')
+setup_server('vimls')
+setup_server('pyright', {
+  settings = {
+    python = {
+      analysis = {
+        typeCheckingMode = 'off',
+      },
+    },
+  },
+})
+
+local rust_opts = {}
+local rust_cmd = rust_analyzer_cmd()
+if rust_cmd ~= nil then
+  rust_opts.cmd = { rust_cmd }
+end
+setup_server('rust_analyzer', rust_opts)
+
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open diagnostics float' })
+vim.keymap.set('n', '<leader>dn', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic' })
+vim.keymap.set('n', '<leader>dp', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', { clear = true }),
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+    if lsp_supports_method(client, 'documentHighlightProvider') then
+      local group = vim.api.nvim_create_augroup('LspDocumentHighlight' .. ev.buf, { clear = true })
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+        buffer = ev.buf,
+        callback = vim.lsp.buf.document_highlight,
+        group = group,
+      })
+      vim.api.nvim_create_autocmd('CursorMoved', {
+        buffer = ev.buf,
+        callback = vim.lsp.buf.clear_references,
+        group = group,
+      })
+    end
+  end,
+})

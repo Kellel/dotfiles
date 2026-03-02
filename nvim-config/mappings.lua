@@ -10,23 +10,49 @@ local function execute_if_available(command, fallback)
   end
 end
 
-vim.keymap.set('n', '<leader>lg', execute_if_available('LazyGit'), { noremap = true, silent = true })
+local function map(mode, lhs, rhs, desc, opts)
+  local mapping_opts = {
+    desc = desc,
+    noremap = true,
+    silent = true,
+  }
+
+  if opts then
+    mapping_opts = vim.tbl_deep_extend('force', mapping_opts, opts)
+  end
+
+  vim.keymap.set(mode, lhs, rhs, mapping_opts)
+end
+
+map('n', '<leader>lg', execute_if_available('LazyGit'), 'Open LazyGit')
 
 -- lsp trouble
-vim.keymap.set('n', '<leader>tt', execute_if_available('TroubleToggle document_diagnostics', 'Trouble plugin is not installed'), { noremap = true })
-vim.keymap.set('n', '<leader>tw', execute_if_available('TroubleToggle workspace_diagnostics', 'Trouble plugin is not installed'), { noremap = true })
-vim.keymap.set('n', '<leader>tq', execute_if_available('TroubleToggle quickfix', 'Trouble plugin is not installed'), { noremap = true })
-vim.keymap.set('n', '<leader>td', execute_if_available('TroubleToggle lsp_definitions', 'Trouble plugin is not installed'), { noremap = true })
-vim.keymap.set('n', '<leader>tr', execute_if_available('TroubleToggle lsp_references', 'Trouble plugin is not installed'), { noremap = true })
+map('n', '<leader>tt', execute_if_available('TroubleToggle document_diagnostics', 'Trouble plugin is not installed'), 'Open document diagnostics in Trouble')
+map('n', '<leader>tw', execute_if_available('TroubleToggle workspace_diagnostics', 'Trouble plugin is not installed'), 'Open workspace diagnostics in Trouble')
+map('n', '<leader>tq', execute_if_available('TroubleToggle quickfix', 'Trouble plugin is not installed'), 'Open quickfix in Trouble')
+map('n', '<leader>td', execute_if_available('TroubleToggle lsp_definitions', 'Trouble plugin is not installed'), 'Open definitions in Trouble')
+map('n', '<leader>tr', execute_if_available('TroubleToggle lsp_references', 'Trouble plugin is not installed'), 'Open references in Trouble')
 
 -- telescope
-vim.api.nvim_set_keymap('n', '<leader>ff', "<cmd>lua require('telescope.builtin').find_files()<cr>", { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>fg', "<cmd>lua require('telescope.builtin').live_grep()<cr>", { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>fb', "<cmd>lua require('telescope.builtin').buffers()<cr>", { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>fh', "<cmd>lua require('telescope.builtin').help_tags()<cr>", { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>fd', "<cmd>lua require('telescope.builtin').diagnostics()<cr>", { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>fi', "<cmd>lua require('telescope.builtin').lsp_implementations()<cr>", { noremap = true })
-vim.keymap.set('n', '<leader>fw', function()
+map('n', '<leader>ff', function()
+  require('telescope.builtin').find_files()
+end, 'Find files')
+map('n', '<leader>fg', function()
+  require('telescope.builtin').live_grep()
+end, 'Live grep')
+map('n', '<leader>fb', function()
+  require('telescope.builtin').buffers()
+end, 'Find buffers')
+map('n', '<leader>fh', function()
+  require('telescope.builtin').help_tags()
+end, 'Search help')
+map('n', '<leader>fd', function()
+  require('telescope.builtin').diagnostics()
+end, 'Search diagnostics')
+map('n', '<leader>fi', function()
+  require('telescope.builtin').lsp_implementations()
+end, 'Find implementations')
+map('n', '<leader>fw', function()
   local ok = pcall(function()
     vim.cmd('Telescope telescope-cargo-workspace switch')
   end)
@@ -34,7 +60,7 @@ vim.keymap.set('n', '<leader>fw', function()
   if not ok then
     require('telescope.builtin').find_files()
   end
-end, { noremap = true })
+end, 'Switch cargo workspace or fallback to find files')
 
 -- neotree
-vim.keymap.set('n', '<leader><space>', "<cmd>Neotree<cr>", { noremap = true })
+map('n', '<leader><space>', '<cmd>Neotree<cr>', 'Open Neo-tree')

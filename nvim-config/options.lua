@@ -21,9 +21,7 @@ vim.opt.cursorline = true
 vim.opt.number = true
 --vim.opt.colorcolumn = '100'
 
-vim.cmd([[
-set completeopt=menu,menuone,noselect
-]])
+vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -49,4 +47,11 @@ vim.diagnostic.config({
 -- You will likely want to reduce updatetime which affects CursorHold
 -- note: this setting is global and should be set only once
 vim.o.updatetime = 500
-vim.cmd [[autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+local diagnostic_float = vim.api.nvim_create_augroup('DiagnosticFloat', { clear = true })
+vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
+  callback = function()
+    vim.diagnostic.open_float(nil, { focus = false })
+  end,
+  group = diagnostic_float,
+  pattern = '*',
+})
