@@ -45,13 +45,12 @@ in {
 
         ## Treesitter
         {
-          plugin = pkgs.vimPlugins.nvim-treesitter;
+          plugin = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
           config = builtins.readFile nvim-config/setup/treesitter.lua;
           type = "lua";
         }
 
-        pkgs.vimPlugins.nvim-treesitter.withAllGrammars
-        pkgs.vimPlugins.nvim-treesitter-textobjects
+        unstable.vimPlugins.nvim-treesitter-textobjects
 
         {
           plugin = pkgs.vimPlugins.nvim-lspconfig;

@@ -46,8 +46,8 @@
   };
 
   home.sessionVariables = {
-     EDITOR = "vim";
-     GTK_THEME = "Everforest-Dark-B-LB";
+    EDITOR = "nvim";
+    GTK_THEME = "Everforest-Dark-B-LB";
   };
 
   home.sessionPath = [
@@ -58,7 +58,6 @@
   ];
 
   imports = [
-    ./vim.nix 
     ./nvim.nix
     ./tmux.nix
   ];
@@ -75,7 +74,7 @@
 	  fetch = { prune = true; pruneTags = true; all = true; };
       pull = { rebase = true; };
       init = { defaultBranch = "main"; };
-      core = { editor = "vim"; };
+      core = { editor = "nvim"; };
 	  help = { autocorrect = "prompt"; };
 	  rrere = { enabled = true; autoupdate = true; };
 	  rebase = { autoSquash = true; autoStash = true; updateRefs = true; };
