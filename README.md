@@ -14,12 +14,18 @@ EOF
 # 2) clone and apply
 git clone <your-dotfiles-repo-url> ~/repos/dotfiles
 cd ~/repos/dotfiles
-home-manager switch --flake .#kellen
+home-manager switch --flake .#chewbacca
 ```
+
+Available flake targets:
+
+- `chewbacca` (work email)
+- `skywalker` (personal email)
+- `kellen` (work email, alias of `chewbacca`)
 
 If `home-manager` is not available as a command:
 ```bash
-nix run github:nix-community/home-manager -- switch --flake .#kellen
+nix run github:nix-community/home-manager -- switch --flake .#chewbacca
 ```
 
 ## 1) Bootstrap
@@ -54,12 +60,12 @@ cd ~/repos/dotfiles
 
 ```bash
 cd ~/repos/dotfiles
-home-manager switch --flake .#kellen
+home-manager switch --flake .#chewbacca
 ```
 
 If `home-manager` is not a command yet:
 ```bash
-nix run github:nix-community/home-manager -- switch --flake .#kellen
+nix run github:nix-community/home-manager -- switch --flake .#chewbacca
 ```
 
 ## 4) Update packages / inputs
@@ -71,7 +77,7 @@ nix flake update
 
 Then re-apply the state:
 ```bash
-home-manager switch --flake .#kellen
+home-manager switch --flake .#chewbacca
 ```
 
 ## 5) Re-apply after local edits
@@ -79,7 +85,7 @@ home-manager switch --flake .#kellen
 Every time you change config files, run:
 ```bash
 cd ~/repos/dotfiles
-home-manager switch --flake .#kellen
+home-manager switch --flake .#chewbacca
 ```
 
 ## Notes
