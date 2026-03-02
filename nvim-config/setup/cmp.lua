@@ -1,6 +1,14 @@
 local lspkind = require('lspkind')
 local luasnip = require("luasnip")
 local cmp = require'cmp'
+
+local function has_words_before()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local current_line = vim.api.nvim_buf_get_lines(0, line - 1, line, false)[1]
+
+  return col ~= 0 and current_line:sub(col, col):match('%s') == nil
+end
+
 cmp.setup({
   mapping = {
     ["<Tab>"] = cmp.mapping(function(fallback)
@@ -33,23 +41,6 @@ cmp.setup({
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    ["<C-k>"] = cmp.mapping(function(fallback)
-      if luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif has_words_before() then
-        cmp.complete()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-
-    ["<C-j>"] = cmp.mapping(function(fallback)
-      if luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
   },
 
   sources = {

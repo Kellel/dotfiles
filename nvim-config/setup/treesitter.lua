@@ -1,12 +1,21 @@
-require('nvim-treesitter').setup()
+local ts_configs_ok, ts_configs = pcall(require, 'nvim-treesitter.configs')
 
-vim.api.nvim_create_augroup('treesitter-config', { clear = true })
-vim.api.nvim_create_autocmd('FileType', {
-  group = 'treesitter-config',
-  callback = function()
-    vim.treesitter.start()
-    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-    vim.wo.foldmethod = 'expr'
-    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-  end,
-})
+if ts_configs_ok then
+  ts_configs.setup {
+    highlight = {
+      enable = true,
+    },
+    indent = {
+      enable = true,
+    },
+  }
+else
+  require('nvim-treesitter').setup {
+    highlight = {
+      enable = true,
+    },
+    indent = {
+      enable = true,
+    },
+  }
+end

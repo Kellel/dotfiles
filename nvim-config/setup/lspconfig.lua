@@ -19,6 +19,14 @@ require'lspconfig'.pyright.setup{
 }
 require'lspconfig'.vimls.setup{}
 
+local function code_action(opts)
+  if vim.fn.exists(':CodeActionMenu') == 2 then
+    vim.cmd('CodeActionMenu')
+  else
+    vim.lsp.buf.code_action(opts)
+  end
+end
+
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
@@ -49,10 +57,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
     vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-    vim.api.nvim_set_keymap('n', '<leader>ca', '<cmd>CodeActionMenu<cr>', { noremap = true })
+    vim.keymap.set('n', '<leader>ca', function()
+      code_action({ apply = true })
+    end, opts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', '<leader>fm', function()
       vim.lsp.buf.format { async = true }
     end, opts)
-  end,
-})
+    end,
+  })

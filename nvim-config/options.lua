@@ -3,10 +3,10 @@ vim.opt.termguicolors = false
 vim.opt.background='dark'
 
 -- QOL settings
-HOME = os.getenv("HOME")
-vim.opt.backupdir = HOME .. '/.config/nvim/tmp/backup_files/'
-vim.opt.directory = HOME .. '/.config/nvim/tmp/swap_files/'
-vim.opt.undodir = HOME .. '/.config/nvim/tmp/undo_files/'
+local home = os.getenv("HOME")
+vim.opt.backupdir = home .. '/.config/nvim/tmp/backup_files/'
+vim.opt.directory = home .. '/.config/nvim/tmp/swap_files/'
+vim.opt.undodir = home .. '/.config/nvim/tmp/undo_files/'
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.smartindent = true

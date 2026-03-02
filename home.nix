@@ -1,4 +1,4 @@
-{ config, pkgs, libs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -35,11 +35,11 @@
     pkgs.xsel
 	pkgs.nerdfonts
     pkgs.gopls
-    pkgs.rust-analyzer
     pkgs.pyright
     pkgs.ripgrep
     pkgs.nil
     pkgs.gnomeExtensions.user-themes
+    pkgs.rustup
   ];
 
   home.file = {
@@ -48,14 +48,27 @@
   home.sessionVariables = {
     EDITOR = "nvim";
     GTK_THEME = "Everforest-Dark-B-LB";
+    RUSTUP_HOME = "${config.home.homeDirectory}/.rustup";
+    CARGO_HOME = "${config.home.homeDirectory}/.cargo";
   };
 
   home.sessionPath = [
     "$HOME/.platformio/penv/bin"
     "$HOME/go/bin/"
     "/usr/local/go/bin"
+    "$HOME/.cargo/bin"
     "$HOME/.nix-profile/bin"
   ];
+
+  home.activation.rustupToolchain = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    RUSTUP_HOME="${config.home.homeDirectory}/.rustup"
+    CARGO_HOME="${config.home.homeDirectory}/.cargo"
+    export RUSTUP_HOME CARGO_HOME
+    mkdir -p "$RUSTUP_HOME" "$CARGO_HOME"
+    ${pkgs.rustup}/bin/rustup toolchain install stable
+    ${pkgs.rustup}/bin/rustup default stable
+    ${pkgs.rustup}/bin/rustup component add rustfmt clippy rust-src rust-analyzer
+  '';
 
   imports = [
     ./nvim.nix
