@@ -65,14 +65,14 @@ local function copy(args)
 end
 
 -- 'recursive' dynamic snippet. Expands to some text followed by itself.
-local rec_ls
-rec_ls = function()
+local recursive_item_snippet
+recursive_item_snippet = function()
 	return sn(
 		nil,
 		c(1, {
 			-- Order is important, sn(...) first would cause infinite loop of expansion.
 			t(""),
-			sn(nil, { t({ "", "\t\\item " }), i(1), d(2, rec_ls, {}) }),
+			sn(nil, { t({ "", "\t\\item " }), i(1), d(2, recursive_item_snippet, {}) }),
 		})
 	)
 end
@@ -189,12 +189,12 @@ local delete_class = function(class_name)
 end
 
 
-local rec_ls
-rec_ls = function()
+local recursive_cpp_snippet
+recursive_cpp_snippet = function()
 	return sn(nil, {
 		c(1, {
 			t({""}),
-			sn(nil, {t( " << "), i(1), d(2, rec_ls, {})}),
+			sn(nil, {t( " << "), i(1), d(2, recursive_cpp_snippet, {})}),
 		}),
 	});
 end
@@ -234,7 +234,7 @@ ls.add_snippets("cpp", {
 	}),
 
   s("cout", {
-    t("std::cout << "), i(1), d(2, rec_ls, {}), t(" << std::endl;"), i(0)
+    t("std::cout << "), i(1), d(2, recursive_cpp_snippet, {}), t(" << std::endl;"), i(0)
   }),
 
   s('once', {
@@ -278,11 +278,13 @@ ls.add_snippets("all", {
 
 -- <c-k> is my expansion key
 -- this will expand the current item or jump to the next item within the snippet.
+local snippet_keymap_opts = { silent = true }
+
 vim.keymap.set({ "i", "s" }, "<c-k>", function()
   if ls.expand_or_jumpable() then
     ls.expand_or_jump()
   end
-end, { silent = true })
+end, snippet_keymap_opts)
 
 -- <c-j> is my jump backwards key.
 -- this always moves to the previous item within the snippet
@@ -290,7 +292,7 @@ vim.keymap.set({ "i", "s" }, "<c-j>", function()
   if ls.jumpable(-1) then
     ls.jump(-1)
   end
-end, { silent = true })
+end, snippet_keymap_opts)
 
 -- <c-l> is selecting within a list of options.
 -- This is useful for choice nodes (introduced in the forthcoming episode 2)

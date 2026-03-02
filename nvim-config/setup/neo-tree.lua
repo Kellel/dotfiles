@@ -1,3 +1,22 @@
+local order_by_mappings = {
+  ["o"] = {
+    "show_help",
+    nowait = false,
+    config = { title = "Order by", prefix_key = "o" },
+  },
+  ["oc"] = { "order_by_created", nowait = false },
+  ["od"] = { "order_by_diagnostics", nowait = false },
+  ["og"] = { "order_by_git_status", nowait = false },
+  ["om"] = { "order_by_modified", nowait = false },
+  ["on"] = { "order_by_name", nowait = false },
+  ["os"] = { "order_by_size", nowait = false },
+  ["ot"] = { "order_by_type", nowait = false },
+}
+
+local function mapping_copy(mapping)
+  return vim.tbl_deep_extend('force', {}, mapping)
+end
+
 local config = {
   -- If a user has a sources list it will replace this one.
   -- Only sources listed here will be loaded.
@@ -404,7 +423,7 @@ local config = {
   },
   filesystem = {
     window = {
-      mappings = {
+      mappings = vim.tbl_deep_extend('force', {
         ["H"] = "toggle_hidden",
         ["/"] = "fuzzy_finder",
         ["D"] = "fuzzy_finder_directory",
@@ -418,15 +437,7 @@ local config = {
         ["[g"] = "prev_git_modified",
         ["]g"] = "next_git_modified",
         ["i"] = "show_file_details",
-        ["o"] = { "show_help", nowait=false, config = { title = "Order by", prefix_key = "o" }},
-        ["oc"] = { "order_by_created", nowait = false },
-        ["od"] = { "order_by_diagnostics", nowait = false },
-        ["og"] = { "order_by_git_status", nowait = false },
-        ["om"] = { "order_by_modified", nowait = false },
-        ["on"] = { "order_by_name", nowait = false },
-        ["os"] = { "order_by_size", nowait = false },
-        ["ot"] = { "order_by_type", nowait = false },
-      },
+      }, mapping_copy(order_by_mappings)),
       fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
         ["<down>"] = "move_cursor_down",
         ["<C-n>"] = "move_cursor_down",
@@ -540,24 +551,17 @@ local config = {
     -- are mark as "unloaded". Turn this on to view these unloaded buffer.
     terminals_first = false,  -- when true, terminals will be listed before file buffers
     window = {
-      mappings = {
+      mappings = vim.tbl_deep_extend('force', {
         ["<bs>"] = "navigate_up",
         ["."] = "set_root",
         ["bd"] = "buffer_delete",
         ["i"] = "show_file_details",
-        ["o"] = { "show_help", nowait=false, config = { title = "Order by", prefix_key = "o" }},
-        ["oc"] = { "order_by_created", nowait = false },
-        ["od"] = { "order_by_diagnostics", nowait = false },
-        ["om"] = { "order_by_modified", nowait = false },
-        ["on"] = { "order_by_name", nowait = false },
-        ["os"] = { "order_by_size", nowait = false },
-        ["ot"] = { "order_by_type", nowait = false },
-      },
+      }, mapping_copy(order_by_mappings)),
     },
   },
   git_status = {
     window = {
-      mappings = {
+      mappings = vim.tbl_deep_extend('force', {
         ["A"] = "git_add_all",
         ["gu"] = "git_unstage_file",
         ["ga"] = "git_add_file",
@@ -566,14 +570,7 @@ local config = {
         ["gp"] = "git_push",
         ["gg"] = "git_commit_and_push",
         ["i"] = "show_file_details",
-        ["o"] = { "show_help", nowait=false, config = { title = "Order by", prefix_key = "o" }},
-        ["oc"] = { "order_by_created", nowait = false },
-        ["od"] = { "order_by_diagnostics", nowait = false },
-        ["om"] = { "order_by_modified", nowait = false },
-        ["on"] = { "order_by_name", nowait = false },
-        ["os"] = { "order_by_size", nowait = false },
-        ["ot"] = { "order_by_type", nowait = false },
-      },
+      }, mapping_copy(order_by_mappings)),
     },
   },
   document_symbols = {
