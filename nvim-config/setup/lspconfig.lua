@@ -29,20 +29,26 @@ local function rust_analyzer_cmd()
 end
 
 local function lsp_supports_method(client, method)
-  if client == nil or client.server_capabilities == nil then
+  if client == nil or type(client.supports_method) ~= 'function' then
     return false
   end
 
-  local capability = client.server_capabilities[method]
-  if capability == nil or capability == false then
-    return false
-  end
+  local ok, supports = pcall(client.supports_method, client, method)
+  return ok and supports or false
+end
 
-  if type(capability) == 'boolean' then
-    return capability
+local function map_if_supported(buffer_opts, client, method, lhs, rhs, desc)
+  if lsp_supports_method(client, method) then
+    vim.keymap.set('n', lhs, rhs, vim.tbl_extend('force', buffer_opts, { desc = desc }))
   end
+end
 
-  return true
+local function format_if_supported(client, buffer_opts, desc)
+  if lsp_supports_method(client, 'textDocument/formatting') or lsp_supports_method(client, 'textDocument/rangeFormatting') then
+    vim.keymap.set('n', '<leader>fm', function()
+      vim.lsp.buf.format({ async = true })
+    end, vim.tbl_extend('force', buffer_opts, { desc = desc }))
+  end
 end
 
 local function on_attach(client, bufnr)
@@ -50,20 +56,14 @@ local function on_attach(client, bufnr)
 
   local opts = { buffer = bufnr }
 
-  local function map_if(provider, lhs, rhs, desc)
-    if lsp_supports_method(client, provider) then
-      vim.keymap.set('n', lhs, rhs, vim.tbl_extend('force', opts, { desc = desc }))
-    end
-  end
-
-  map_if('declarationProvider', 'gD', vim.lsp.buf.declaration, 'LSP declaration')
-  map_if('definitionProvider', 'gd', vim.lsp.buf.definition, 'LSP definition')
-  map_if('hoverProvider', 'K', vim.lsp.buf.hover, 'LSP hover')
-  map_if('signatureHelpProvider', '<C-k>', vim.lsp.buf.signature_help, 'LSP signature help')
-  map_if('implementationProvider', 'gi', vim.lsp.buf.implementation, 'LSP implementation')
-  map_if('typeDefinitionProvider', '<leader>D', vim.lsp.buf.type_definition, 'LSP type definition')
-  map_if('renameProvider', '<leader>rn', vim.lsp.buf.rename, 'LSP rename symbol')
-  map_if('referencesProvider', 'gr', vim.lsp.buf.references, 'LSP references')
+  map_if_supported(opts, client, 'textDocument/declaration', 'gD', vim.lsp.buf.declaration, 'LSP declaration')
+  map_if_supported(opts, client, 'textDocument/definition', 'gd', vim.lsp.buf.definition, 'LSP definition')
+  map_if_supported(opts, client, 'textDocument/hover', 'K', vim.lsp.buf.hover, 'LSP hover')
+  map_if_supported(opts, client, 'textDocument/signatureHelp', '<C-k>', vim.lsp.buf.signature_help, 'LSP signature help')
+  map_if_supported(opts, client, 'textDocument/implementation', 'gi', vim.lsp.buf.implementation, 'LSP implementation')
+  map_if_supported(opts, client, 'textDocument/typeDefinition', '<leader>D', vim.lsp.buf.type_definition, 'LSP type definition')
+  map_if_supported(opts, client, 'textDocument/rename', '<leader>rn', vim.lsp.buf.rename, 'LSP rename symbol')
+  map_if_supported(opts, client, 'textDocument/references', 'gr', vim.lsp.buf.references, 'LSP references')
 
   vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, vim.tbl_extend('force', opts, { desc = 'Add workspace folder' }))
   vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, vim.tbl_extend('force', opts, { desc = 'Remove workspace folder' }))
@@ -74,11 +74,7 @@ local function on_attach(client, bufnr)
     code_action({ apply = true })
   end, vim.tbl_extend('force', opts, { desc = 'LSP code action' }))
 
-  if lsp_supports_method(client, 'documentFormattingProvider') or lsp_supports_method(client, 'documentRangeFormattingProvider') then
-    vim.keymap.set('n', '<leader>fm', function()
-      vim.lsp.buf.format({ async = true })
-    end, vim.tbl_extend('force', opts, { desc = 'Format buffer' }))
-  end
+  format_if_supported(client, opts, 'Format buffer')
 end
 
 local function setup_server(name, opts)
@@ -126,7 +122,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
-    if lsp_supports_method(client, 'documentHighlightProvider') then
+    if lsp_supports_method(client, 'textDocument/documentHighlight') then
       local group = vim.api.nvim_create_augroup('LspDocumentHighlight' .. ev.buf, { clear = true })
       vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
         buffer = ev.buf,
