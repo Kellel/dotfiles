@@ -1,5 +1,4 @@
 -- THEME
-vim.opt.termguicolors = false
 vim.opt.background = 'dark'
 
 -- QOL settings
@@ -22,6 +21,10 @@ vim.opt.number = true
 --vim.opt.colorcolumn = '100'
 
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
+
+vim.opt.termguicolors = true
+vim.opt.signcolumn = 'yes'
+vim.opt.showmode = false
 
 local box_border = 'rounded'
 
