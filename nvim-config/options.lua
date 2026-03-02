@@ -43,6 +43,10 @@ end
 vim.diagnostic.config({
   virtual_text = true,
   update_in_insert = false,
+  float = {
+    border = 'rounded',
+    source = 'if_many',
+  },
 })
 -- You will likely want to reduce updatetime which affects CursorHold
 -- note: this setting is global and should be set only once
@@ -50,7 +54,7 @@ vim.o.updatetime = 500
 local diagnostic_float = vim.api.nvim_create_augroup('DiagnosticFloat', { clear = true })
 vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
   callback = function()
-    vim.diagnostic.open_float(nil, { focus = false })
+    vim.diagnostic.open_float(nil, { focus = false, border = 'rounded' })
   end,
   group = diagnostic_float,
   pattern = '*',

@@ -1,6 +1,16 @@
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = 'rounded',
+  max_width = 90,
+  max_height = 30,
+})
+
+vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+  border = 'rounded',
+})
+
 local function code_action(opts)
   if vim.fn.exists(':CodeActionMenu') == 2 then
     vim.cmd('CodeActionMenu')
