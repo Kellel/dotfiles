@@ -28,12 +28,36 @@
         allowUnfreePredicate = (_: true);
       };
     };
+
+    makeHome = { hostName, email, hostModules ? [ ], hostPackages ? [ ] }:
+      home-manager.lib.homeManagerConfiguration {
+        pkgs = stable;
+        modules = [ ./home.nix ];
+        extraSpecialArgs = {
+          unstable = unstablePkgs;
+          machineEmail = email;
+          machineName = hostName;
+          machineModules = hostModules;
+          machinePackages = hostPackages;
+          opencodeConfig = null;
+        };
+      };
   in {
-    homeConfigurations.kellen = home-manager.lib.homeManagerConfiguration {
-      pkgs = stable;
-      modules = [ ./home.nix ];
-      extraSpecialArgs = {
-        unstable = unstablePkgs;
+    homeConfigurations = {
+      kellen = makeHome {
+        hostName = "chewbacca";
+        email = "kellen@cloudflare.com";
+      };
+
+      chewbacca = makeHome {
+        hostName = "chewbacca";
+        email = "kellen@cloudflare.com";
+      };
+
+      skywalker = makeHome {
+        hostName = "skywalker";
+        email = "kellenhfox@gmail.com";
+        hostModules = [ ./modules/platformio.nix ];
       };
     };
 

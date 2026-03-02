@@ -1,5 +1,22 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, machineEmail ? "kellen@cloudflare.com", machinePackages ? [ ], machineModules ? [ ], opencodeConfig ? null, ... }:
 
+let
+  opencodeConfigSource =
+    if opencodeConfig != null
+    then opencodeConfig
+    else let
+      configRepoFromEnv = builtins.getEnv "OPENCODE_CONFIG_REPO";
+      fallbackConfigRepo = if configRepoFromEnv != "" then configRepoFromEnv else "${config.home.homeDirectory}/repos/opencode-config";
+    in
+      if (
+        builtins.pathExists fallbackConfigRepo &&
+        builtins.length (builtins.filter
+          (entry: entry != ".git")
+          (builtins.attrNames (builtins.readDir fallbackConfigRepo))) > 0
+      )
+      then fallbackConfigRepo
+      else null;
+in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -37,7 +54,8 @@
     pkgs.ripgrep
     pkgs.nil
     pkgs.rustup
-  ];
+    pkgs.opencode
+  ] ++ machinePackages;
 
   home.file = {
     ".themes/${config.gtk.theme.name}".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
@@ -51,7 +69,6 @@
   };
 
   home.sessionPath = [
-    "$HOME/.platformio/penv/bin"
     "$HOME/go/bin/"
     "/usr/local/go/bin"
     "$HOME/.cargo/bin"
@@ -91,7 +108,7 @@
   imports = [
     ./nvim.nix
     ./tmux.nix
-  ];
+  ] ++ machineModules;
 
   programs.git = {
     enable = true;
@@ -141,7 +158,7 @@
       };
       user = {
         name = "Kellen Fox";
-        email = "kellen@cloudflare.com";
+        email = machineEmail;
       };
     };
   };
@@ -259,6 +276,8 @@
       }
     '';
     "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
+  } // lib.optionalAttrs (opencodeConfigSource != null) {
+    "opencode".source = opencodeConfigSource;
   };
 
   xdg.dataFile = {
