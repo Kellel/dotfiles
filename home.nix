@@ -1,4 +1,4 @@
-{ config, pkgs, lib, machineEmail ? "kellen@cloudflare.com", machinePackages ? [ ], machineModules ? [ ], opencodeConfig ? null, ... }:
+{ config, pkgs, lib, machineEmail, machineReposDir, machinePackages ? [ ], machineModules ? [ ], opencodeConfig ? null, ... }:
 
 let
   opencodeConfigSource =
@@ -6,7 +6,7 @@ let
     then opencodeConfig
     else let
       configRepoFromEnv = builtins.getEnv "OPENCODE_CONFIG_REPO";
-      fallbackConfigRepo = if configRepoFromEnv != "" then configRepoFromEnv else "${config.home.homeDirectory}/repos/opencode-config";
+      fallbackConfigRepo = if configRepoFromEnv != "" then configRepoFromEnv else "${config.home.homeDirectory}/${machineReposDir}/opencode-config";
     in
       if (
         builtins.pathExists fallbackConfigRepo &&
@@ -75,6 +75,10 @@ in
     "$HOME/.cargo/bin"
     "$HOME/.nix-profile/bin"
   ];
+
+  home.activation.ensureReposDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    mkdir -p "${config.home.homeDirectory}/${machineReposDir}"
+  '';
 
   home.activation.rustupToolchain = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     RUSTUP_HOME="${config.home.homeDirectory}/.rustup"

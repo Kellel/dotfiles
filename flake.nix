@@ -29,7 +29,7 @@
       };
     };
 
-    makeHome = { hostName, email, hostModules ? [ ], hostPackages ? [ ] }:
+    makeHome = { hostName, email, reposDir, hostModules ? [ ], hostPackages ? [ ] }:
       home-manager.lib.homeManagerConfiguration {
         pkgs = stable;
         modules = [ ./home.nix ];
@@ -37,6 +37,7 @@
           unstable = unstablePkgs;
           machineEmail = email;
           machineName = hostName;
+          machineReposDir = reposDir;
           machineModules = hostModules;
           machinePackages = hostPackages;
           opencodeConfig = null;
@@ -44,19 +45,16 @@
       };
   in {
     homeConfigurations = {
-      kellen = makeHome {
-        hostName = "chewbacca";
-        email = "kellen@cloudflare.com";
-      };
-
       chewbacca = makeHome {
         hostName = "chewbacca";
         email = "kellen@cloudflare.com";
+        reposDir = "personal";
       };
 
       skywalker = makeHome {
         hostName = "skywalker";
         email = "kellenhfox@gmail.com";
+        reposDir = "repos";
         hostModules = [ ./modules/platformio.nix ];
       };
     };
