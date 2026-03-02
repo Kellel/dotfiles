@@ -38,8 +38,10 @@ in {
         {
           plugin = pkgs.vimPlugins.everforest;
           config = ''
-		  let g:everforest_transparent_background = 2
-          colorscheme everforest
+            let g:everforest_transparent_background = 2
+            let g:everforest_background = 'hard'
+            let g:everforest_enable_italic = 1
+            colorscheme everforest
           '';
         }
 
@@ -79,7 +81,7 @@ in {
         pkgs.vimPlugins.cmp-cmdline
         pkgs.vimPlugins.cmp-path
         pkgs.vimPlugins.cmp_luasnip
-		pkgs.vimPlugins.plenary-nvim
+        pkgs.vimPlugins.plenary-nvim
 
         # Adds pictograms to stuff 
         pkgs.vimPlugins.lspkind-nvim
@@ -99,17 +101,17 @@ in {
 
         pkgs.vimPlugins.fugitive
 
-		{
-			plugin = unstable.vimPlugins.go-nvim;
-			config = builtins.readFile nvim-config/setup/go-nvim.lua;
-			type = "lua";
-		}
+        {
+          plugin = unstable.vimPlugins.go-nvim;
+          config = builtins.readFile nvim-config/setup/go-nvim.lua;
+          type = "lua";
+        }
 
-		{
-			plugin = pkgs.vimPlugins.lualine-nvim;
-			config = builtins.readFile nvim-config/setup/lualine.lua;
-			type = "lua";
-		}
+        {
+          plugin = pkgs.vimPlugins.lualine-nvim;
+          config = builtins.readFile nvim-config/setup/lualine.lua;
+          type = "lua";
+        }
 
       ];
 
