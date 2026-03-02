@@ -1,14 +1,25 @@
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = 'rounded',
+local float_style = {
+  border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
   max_width = 90,
   max_height = 30,
+  focusable = false,
+}
+
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = float_style.border,
+  max_width = float_style.max_width,
+  max_height = float_style.max_height,
+  focusable = float_style.focusable,
+  close_events = { 'CursorMoved', 'BufHidden', 'InsertCharPre' },
 })
 
 vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-  border = 'rounded',
+  border = float_style.border,
+  focusable = float_style.focusable,
+  close_events = { 'CursorMoved', 'BufHidden', 'InsertCharPre' },
 })
 
 local function code_action(opts)
