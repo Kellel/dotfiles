@@ -18,12 +18,6 @@ in
 
   home.stateVersion = "25.11"; # Please read the comment before changing.
 
-  nixpkgs = {
-    overlays = [
-      (self: super: { everforest = super.callPackage ./packages/everforest.nix {}; })
-    ];
-  };
-
   fonts.fontconfig.enable = true;
 
   # The home.packages option allows you to install Nix packages into your
@@ -51,13 +45,9 @@ in
     pkgs.gnomeExtensions.user-themes
   ] ++ machinePackages;
 
-  home.file = {
-    ".themes/${config.gtk.theme.name}".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
-  };
-
   home.sessionVariables = {
     EDITOR = "nvim";
-    GTK_THEME = "Everforest-Dark-B-LB:dark";
+    GTK_THEME = "${config.gtk.theme.name}:dark";
     RUSTUP_HOME = "${config.home.homeDirectory}/.rustup";
     CARGO_HOME = "${config.home.homeDirectory}/.cargo";
   };
@@ -244,54 +234,22 @@ in
   gtk = {
     enable = true;
     theme = {
-      package = pkgs.everforest;
-      name = "Everforest-Dark-B-LB";
+      package = pkgs.colloid-gtk-theme.override {
+        colorVariants = [ "dark" ];
+        tweaks = [ "everforest" "rimless" ];
+      };
+      name = "Colloid-Dark-Everforest";
     };
     gtk4.extraConfig = {
-      gtk-theme-name = "Everforest-Dark-B-LB";
       gtk-application-prefer-dark-theme = true;
     };
     gtk3.extraConfig = {
-      gtk-theme-name = "Everforest-Dark-B-LB";
       gtk-application-prefer-dark-theme = true;
     };
   };
   xdg.configFile = {
-    "gtk-3.0/gtk.css".source = pkgs.writeText "kellen-gtk3-titlebar-override.css" ''
-      @import url("file://${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-3.0/gtk.css");
-
-      headerbar,
-      .background.csd headerbar,
-      window.background.csd headerbar,
-      .titlebar {
-        background-color: #242d33;
-        border-bottom-color: #3c4954;
-      }
-
-      box.vertical headerbar {
-        background-color: #242d33;
-      }
-    '';
     "gtk-4.0/assets".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";
-    "gtk-4.0/gtk.css".source = pkgs.writeText "kellen-gtk4-titlebar-override.css" ''
-      @import url("file://${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css");
-
-      headerbar,
-      .background.csd headerbar,
-      window.background.csd headerbar,
-      .titlebar {
-        background-color: #242d33;
-        border-bottom-color: #3c4954;
-      }
-
-      headerbar {
-        box-shadow: inset 0 -1px #3c4954;
-      }
-
-      headerbar:backdrop {
-        background-color: #222b32;
-      }
-    '';
+    "gtk-4.0/gtk.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css";
     "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
   };
 
@@ -306,15 +264,15 @@ in
       xkb-options = ["caps:super"];
     };
     "org/gnome/desktop/interface" = {
-      gtk-theme = "Everforest-Dark-B-LB";
+      gtk-theme = config.gtk.theme.name;
       color-scheme = "prefer-dark";
     };
     "org/gnome/desktop/wm/preferences" = {
-      theme = "Everforest-Dark-B-LB";
+      theme = config.gtk.theme.name;
       titlebar-font = "Adwaita Sans Bold 11";
     };
     "org/gnome/shell/extensions/user-theme" = {
-      name = "Everforest-Dark-B-LB";
+      name = config.gtk.theme.name;
     };
     "org/gnome/shell" = {
       disable-user-extensions = false;
