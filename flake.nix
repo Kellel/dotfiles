@@ -5,12 +5,14 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
+    opencode-config.url = "git+ssh://git@github.com/Kellel/opencode-config";
+    opencode-config.flake = false;
 
     # Keep Home Manager using the same stable nixpkgs for predictable module semantics.
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, unstable, home-manager, ... }:
+  outputs = { self, nixpkgs, unstable, home-manager, opencode-config, ... }:
   let
     system = "x86_64-linux";
     stable = import nixpkgs {
@@ -40,7 +42,7 @@
           machineReposDir = reposDir;
           machineModules = hostModules;
           machinePackages = hostPackages;
-          opencodeConfig = null;
+          opencodeConfig = opencode-config;
         };
       };
   in {

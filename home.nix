@@ -1,21 +1,14 @@
 { config, pkgs, lib, machineEmail, machineReposDir, machinePackages ? [ ], machineModules ? [ ], opencodeConfig ? null, ... }:
 
 let
-  opencodeConfigSource =
-    if opencodeConfig != null
-    then opencodeConfig
-    else let
-      configRepoFromEnv = builtins.getEnv "OPENCODE_CONFIG_REPO";
-      fallbackConfigRepo = if configRepoFromEnv != "" then configRepoFromEnv else "${config.home.homeDirectory}/${machineReposDir}/opencode-config";
-    in
-      if (
-        builtins.pathExists fallbackConfigRepo &&
-        builtins.length (builtins.filter
-          (entry: entry != ".git")
-          (builtins.attrNames (builtins.readDir fallbackConfigRepo))) > 0
-      )
-      then fallbackConfigRepo
-      else null;
+  opencodeConfigFiltered = if opencodeConfig != null then
+    lib.cleanSourceWith {
+      src = opencodeConfig;
+      filter = path: type:
+        let name = baseNameOf path; in
+        name != ".git" && name != "node_modules" && name != "bun.lock" && name != "package.json" && name != ".gitignore";
+    }
+  else null;
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -79,6 +72,25 @@ in
   home.activation.ensureReposDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p "${config.home.homeDirectory}/${machineReposDir}"
   '';
+
+  home.activation.opencodeConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] (
+    lib.optionalString (opencodeConfigFiltered != null) ''
+      OPENCODE_CONFIG_DIR="${config.home.homeDirectory}/.config/opencode"
+      OPENCODE_CONFIG_SRC="${opencodeConfigFiltered}"
+
+      mkdir -p "$OPENCODE_CONFIG_DIR"
+
+      # Copy config files from Nix store, overwriting existing config files
+      ${pkgs.rsync}/bin/rsync -a --delete \
+        --exclude='node_modules' \
+        --exclude='bun.lock' \
+        --exclude='package.json' \
+        "$OPENCODE_CONFIG_SRC/" "$OPENCODE_CONFIG_DIR/"
+
+      # Ensure the copied files are writable
+      chmod -R u+w "$OPENCODE_CONFIG_DIR"
+    ''
+  );
 
   home.activation.rustupToolchain = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     RUSTUP_HOME="${config.home.homeDirectory}/.rustup"
@@ -281,8 +293,6 @@ in
       }
     '';
     "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
-  } // lib.optionalAttrs (opencodeConfigSource != null) {
-    "opencode".source = opencodeConfigSource;
   };
 
   xdg.dataFile = {

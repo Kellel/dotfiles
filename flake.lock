@@ -37,10 +37,27 @@
         "type": "github"
       }
     },
+    "opencode-config": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1772478963,
+        "narHash": "sha256-oRL/O6TtB75JKWAXpPiLdMU6x6bIZOmXgDkr3E6Hlg8=",
+        "ref": "refs/heads/main",
+        "rev": "87435eca017c248580b25c5ca0023c16ceded363",
+        "revCount": 2,
+        "type": "git",
+        "url": "ssh://git@github.com/Kellel/opencode-config"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/Kellel/opencode-config"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
+        "opencode-config": "opencode-config",
         "unstable": "unstable"
       }
     },
