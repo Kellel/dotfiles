@@ -115,6 +115,7 @@ in
   imports = [
     ./nvim.nix
     ./tmux.nix
+    ./modules/openai-codex.nix
   ] ++ machineModules;
 
   programs.git = {
